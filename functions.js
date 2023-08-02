@@ -8,9 +8,6 @@ function isPathValid(route) {
     if (!exists) {
         throw new Error('La ruta ingresada no existe');
     }
-    if (typeof route !== 'string') {
-        throw new TypeError('La ruta debe ser una cadena de carácteres');
-    }
     const isDir = isDirectory(absolutePath);
     return { path: absolutePath, isDir };
 }

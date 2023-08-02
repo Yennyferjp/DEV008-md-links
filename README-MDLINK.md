@@ -1,6 +1,7 @@
 ```mermaid
 graph TD;
-  INICIO(Inicio) --> insertRoute["Usuario ingresa la ruta (path, option)"];
+  INICIO(Inicio) --> insertRoute["Usuario ingresa la ruta 
+  (path, option)"];
   insertRoute --> A{"La ruta 
   es válida?"};
   A --> B[Sí];
@@ -21,10 +22,12 @@ graph TD;
    y subdirectorios
     para buscar archivo .md"]
   K --> L["Extraer archivos .md"] --> P
-  J --> M[Hay archivo .md?];
+  J --> M{Hay archivo .md?};
   M --> N["Sí"];
   M --> O["No"];
   N --> P["Leer los archivos"];
+  O --> LL["Mostrar un mensaje en consola"]
+  LL --> MMFIN(Fin);
   P --> Q["Analizar texto"]
   Q --> R{"¿Tiene Links?"};
   R --> S["Sí"];
@@ -34,7 +37,7 @@ graph TD;
   S --> W["Extraer links"];   
   W --> X["Status de links"];
   X --> Y{"¿Tiene opciones?"} -->|False| Z["Imprimir resultado en la consola"] --> VFIN(Fin) ;  
-  Y["¿Tiene opciones?"] -->|True| AA{"---validate 
+  Y{"¿Tiene opciones?"} -->|True| AA{"---validate 
   &
    ---stats"} ;  
   AA --> BB["Sí"];
@@ -48,7 +51,7 @@ graph TD;
    status del link, ruta del archivo, 
    link y texto"]  --> Z
   EE --> HH["No"];
-  HH --> II["--stats"];
+  HH --> II{"--stats"};
   II --> JJ["Contar el No. 
   de links Totales 
   y únicos"] --> Z
