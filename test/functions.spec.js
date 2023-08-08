@@ -2,6 +2,7 @@ const {
     isPathValid,
     getMDFilesInDirectory,
     isDirectory,
+    readMDFile,
 } = require('../functions');
 
 const fs = require('fs');
@@ -32,27 +33,21 @@ describe('getMDFilesInDirectory function', () => {
         const validDirectory = 'C:\\src\\ynnf\\DEV008-md-links\\folderExample';
         const files = ['archivo1.txt', 'archivo2.md', 'archivo3.md', 'archivo4.js'];
 
-        // Mocking de fs.statSync para simular que validAbsolutePath es un directorio
         jest.spyOn(fs, 'statSync').mockReturnValue({
             isDirectory: () => true,
         });
 
-        // Mocking de fs.readdirSync para simular los archivos dentro del directorio
         jest.spyOn(fs, 'readdirSync').mockReturnValue(files);
 
-        // Llamamos a la función que queremos probar
         const result = getMDFilesInDirectory(validDirectory);
 
-        // Utilizamos path.join() para construir las rutas de archivo esperadas
         const expectedFiles = [
             path.join(validDirectory, 'archivo2.md'),
             path.join(validDirectory, 'archivo3.md'),
         ];
 
-        // Verificamos que el resultado sea un array que contenga solo los archivos .md
         expect(result).toEqual(expectedFiles);
 
-        // Restauramos las funciones originales de fs para evitar efectos secundarios en otras pruebas
         fs.statSync.mockRestore();
         fs.readdirSync.mockRestore();
     });
@@ -96,6 +91,34 @@ describe('isDirectory function', () => {
 
         // Restauramos la función original de fs para evitar efectos secundarios en otras pruebas
         fs.statSync.mockRestore();
+    });
+});
+
+
+
+describe('readMDFile function', () => {
+
+    it('deberia leer el contenido de un archivo .md válido', () => {
+        const mockFilePath = 'C:\src\ynnf\DEV008-md-links\folderExample\file-1.md';
+        const mockFileContent = 'Mocked content of the .md file';
+
+        jest.spyOn(fs, 'readFileSync').mockReturnValue(
+            mockFileContent
+        );
+        const result = readMDFile(mockFilePath);
+        expect(result).toEqual(mockFileContent);
+    });
+
+    it('debería arrojar un error para un archivo no válido', () => {
+        const mockFilePath = 'C:\src\ynnf\DEV008-md-links\folderExample\invalid.md';
+        const mockError = new Error('Archivo no encontrado');
+
+        fs.readFileSync.mockImplementation(() => {
+            throw mockError;
+        });
+        expect(() => readMDFile(mockFilePath)).toThrowError(
+            `Error al leer el archivo ${mockFilePath}: ${mockError.message}`
+        );
     });
 });
 
