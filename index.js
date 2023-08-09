@@ -1,6 +1,6 @@
 const {
   isPathValid,
-  // hasMdFiles,
+  
 } = require("./functions.js");
 
 const mdLinks = (path, option) => {

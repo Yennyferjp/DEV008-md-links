@@ -31,5 +31,13 @@
       "node",
       "customExtension"
     ]
+  },
+  "dependencies": {
+    "ansi-colors": "^4.1.3",
+    "node-fetch": "^2.6.12",
+    "yargs": "^17.7.2"
+  },
+  "bin": {
+    "md-links": "./bin/md-links.js"
   }
 }

@@ -3,6 +3,7 @@ const {
     getMDFilesInDirectory,
     isDirectory,
     readMDFile,
+    findLinksInMDText
 } = require('../functions');
 
 const fs = require('fs');
@@ -56,40 +57,26 @@ describe('getMDFilesInDirectory function', () => {
 
 describe('isDirectory function', () => {
     it('debe devolver verdadero para un directorio válido', () => {
-        // Simulamos el comportamiento de fs.statSync utilizando jest.fn()
         const absolutePath = '/ruta/valida/directorio';
-
-        // Mocking de fs.statSync para simular que absolutePath es un directorio
         jest.spyOn(fs, 'statSync').mockReturnValue({
             isDirectory: () => true,
         });
-
-        // Llamamos a la función que queremos probar
         const result = isDirectory(absolutePath);
 
-        // Verificamos que la función devuelva true
         expect(result).toBe(true);
 
-        // Restauramos la función original de fs para evitar efectos secundarios en otras pruebas
         fs.statSync.mockRestore();
     });
 
     it('debe devolver falso para un archivo válido', () => {
-        // Simulamos el comportamiento de fs.statSync utilizando jest.fn()
         const absolutePath = '/ruta/valida/archivo.txt';
-
-        // Mocking de fs.statSync para simular que absolutePath es un archivo
         jest.spyOn(fs, 'statSync').mockReturnValue({
             isDirectory: () => false,
         });
 
-        // Llamamos a la función que queremos probar
         const result = isDirectory(absolutePath);
 
-        // Verificamos que la función devuelva false
         expect(result).toBe(false);
-
-        // Restauramos la función original de fs para evitar efectos secundarios en otras pruebas
         fs.statSync.mockRestore();
     });
 });
@@ -122,3 +109,16 @@ describe('readMDFile function', () => {
     });
 });
 
+describe('findLinksInMDText function', () => {
+
+    it('deberia encontrar los links en el archivo md', () => {
+        jest.resetAllMocks();
+
+        const mockFilePath = 'C:\\src\\ynnf\\DEV008-md-links\\folderExample\\file-1.md';
+        console.log(mockFilePath);
+        const mdText = fs.readFileSync(mockFilePath, 'utf8');
+        const links = findLinksInMDText(mdText);
+        expect(links.linkCount).toBe(3);
+    });
+
+});
