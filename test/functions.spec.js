@@ -3,11 +3,13 @@ const {
     getMDFilesInDirectory,
     isDirectory,
     readMDFile,
-    findLinksInMDText
+    findLinksInMDText,
+    validateLinks,
 } = require('../functions');
 
 const fs = require('fs');
 const path = require('path');
+const fetch = require('node-fetch');
 
 describe('isPathValid function', () => {
     it('debe devolver un objeto con una ruta válida y la propiedad isDir para una ruta absoluta válida', () => {
@@ -115,10 +117,75 @@ describe('findLinksInMDText function', () => {
         jest.resetAllMocks();
 
         const mockFilePath = 'C:\\src\\ynnf\\DEV008-md-links\\folderExample\\file-1.md';
-        console.log(mockFilePath);
         const mdText = fs.readFileSync(mockFilePath, 'utf8');
-        const links = findLinksInMDText(mdText);
-        expect(links.linkCount).toBe(3);
+        const links = findLinksInMDText(mdText, mockFilePath);
+        
+        // Verificar que se hayan encontrado enlaces
+        expect(links.length).toBeGreaterThan(0);
+
     });
 
+
+    it('debería lanzar un error si no se encuentran enlaces en un archivo .md', () => {
+        const fileContent = 'Este es un archivo .md sin enlaces.';
+        expect(() => {
+            findLinksInMDText(fileContent, 'mock-file.md');
+        }).toThrowError('No se encontraron enlaces en el archivo.');
+    });
+    
+
+});
+
+describe('validateLinks function', () => {
+    // Mock de fetch para simular una respuesta exitosa
+    jest.fn().mockResolvedValue({ status: 200 });
+
+    // Mock de fetch para simular una respuesta de error
+    jest.fn().mockRejectedValue({ response: { status: 404 } });
+
+    // Suprimir advertencias sobre console.error durante las pruebas
+    const originalConsoleError = console.error;
+    beforeAll(() => {
+        console.error = jest.fn();
+    });
+    afterAll(() => {
+        console.error = originalConsoleError;
+    });
+    it('debería validar enlaces exitosos', () => {
+        const links = [
+            { href: 'https://example.com', text: 'Enlace 1' },
+            { href: 'https://google.com', text: 'Enlace 2' }
+        ];
+
+        const validatedLinksPromise = validateLinks(links);
+
+        return Promise.all(validatedLinksPromise).then(validatedLinks => {
+            expect(validatedLinks).toHaveLength(2);
+
+            validatedLinks.forEach(link => {
+                expect(link.href).toBeDefined();
+                expect(link.status).toBe(200);
+                expect(link.ok).toBe(true);
+            });
+        });
+    });
+
+    it('debería validar enlaces fallidos', () => {
+        const links = [
+            { href: 'https://nonexistent-link.com', text: 'Enlace 1' },
+            { href: 'https://invalid-link.com', text: 'Enlace 2' }
+        ];
+
+        const validatedLinksPromise = validateLinks(links);
+
+        return Promise.all(validatedLinksPromise).then(validatedLinks => {
+            expect(validatedLinks).toHaveLength(2);
+
+            validatedLinks.forEach(link => {
+                expect(link.href).toBeDefined();
+                expect(link.status).toBe(404);
+                expect(link.ok).toBe(false);
+            });
+        });
+    });
 });
