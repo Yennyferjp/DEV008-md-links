@@ -119,10 +119,13 @@ describe('findLinksInMDText function', () => {
         const mockFilePath = 'C:\\src\\ynnf\\DEV008-md-links\\folderExample\\file-1.md';
         const mdText = fs.readFileSync(mockFilePath, 'utf8');
         const links = findLinksInMDText(mdText, mockFilePath);
-        
+
         // Verificar que se hayan encontrado enlaces
         expect(links.length).toBeGreaterThan(0);
-
+        // Verificar que cada enlace tenga la propiedad 'line'
+        links.forEach(link => {
+            expect(link.line).toBeDefined();
+        });
     });
 
 
@@ -132,7 +135,7 @@ describe('findLinksInMDText function', () => {
             findLinksInMDText(fileContent, 'mock-file.md');
         }).toThrowError('No se encontraron enlaces en el archivo.');
     });
-    
+
 
 });
 
@@ -189,3 +192,4 @@ describe('validateLinks function', () => {
         });
     });
 });
+

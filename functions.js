@@ -1,4 +1,3 @@
-
 const path = require('path');
 const fs = require('fs');
 const fetch = require('node-fetch');
@@ -52,15 +51,21 @@ function readMDFile(route) {
     }
 }
 
-// Encuentra los enlaces en el texto de un archivo .md
+// Encuentra los enlaces en el texto de un archivo .md y en que linea del archivo se encuentra el link
 function findLinksInMDText(fileContent, file) {
     const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
     const links = [];
     let match;
 
-    while ((match = linkRegex.exec(fileContent))) {
-        const [, text, href] = match;
-        links.push({ text, href, file });
+    const lines = fileContent.split('\n');
+    let lineNumber = 1;
+
+    for (const line of lines) {
+        while ((match = linkRegex.exec(line))) {
+            const [, text, href] = match;
+            links.push({ text, href, file, line: lineNumber });
+        }
+        lineNumber++;
     }
 
     if (links.length === 0) {
@@ -78,6 +83,7 @@ function validateLinks(links) {
                     href: link.href,
                     text: link.text,
                     file: link.file,
+                    line: link.line, 
                     status: response.status,
                     ok: true
                 };
@@ -88,6 +94,7 @@ function validateLinks(links) {
                     href: link.href,
                     text: link.text,
                     file: link.file,
+                    line: link.line, 
                     status,
                     ok: false
                 };
