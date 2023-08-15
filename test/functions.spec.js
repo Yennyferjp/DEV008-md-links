@@ -1,3 +1,4 @@
+jest.mock('node-fetch');
 const {
     isPathValid,
     getMDFilesInDirectory,
@@ -6,10 +7,8 @@ const {
     findLinksInMDText,
     validateLinks,
 } = require('../functions');
-
 const fs = require('fs');
 const path = require('path');
-const fetch = require('node-fetch');
 
 describe('isPathValid function', () => {
     it('debe devolver un objeto con una ruta válida y la propiedad isDir para una ruta absoluta válida', () => {
@@ -54,6 +53,17 @@ describe('getMDFilesInDirectory function', () => {
         fs.statSync.mockRestore();
         fs.readdirSync.mockRestore();
     });
+
+    it('debería devolver un array vacío cuando la ruta no es un directorio', () => {
+        const validDirectory = 'C:\\src\\ynnf\\DEV008-md-links\\folderExample\\file-1.md';
+
+        jest.spyOn(fs, 'statSync').mockReturnValue({
+            isDirectory: () => false,
+        });
+        const result = getMDFilesInDirectory(validDirectory);
+        expect(result.length).toEqual(0);
+        fs.statSync.mockRestore();
+    });
 });
 
 
@@ -64,7 +74,6 @@ describe('isDirectory function', () => {
             isDirectory: () => true,
         });
         const result = isDirectory(absolutePath);
-
         expect(result).toBe(true);
 
         fs.statSync.mockRestore();
@@ -75,15 +84,11 @@ describe('isDirectory function', () => {
         jest.spyOn(fs, 'statSync').mockReturnValue({
             isDirectory: () => false,
         });
-
         const result = isDirectory(absolutePath);
-
         expect(result).toBe(false);
         fs.statSync.mockRestore();
     });
 });
-
-
 
 describe('readMDFile function', () => {
 
@@ -135,26 +140,25 @@ describe('findLinksInMDText function', () => {
             findLinksInMDText(fileContent, 'mock-file.md');
         }).toThrowError('No se encontraron enlaces en el archivo.');
     });
-
-
 });
 
 describe('validateLinks function', () => {
-    // Mock de fetch para simular una respuesta exitosa
-    jest.fn().mockResolvedValue({ status: 200 });
-
-    // Mock de fetch para simular una respuesta de error
-    jest.fn().mockRejectedValue({ response: { status: 404 } });
-
+    const fetch = require("node-fetch");
     // Suprimir advertencias sobre console.error durante las pruebas
     const originalConsoleError = console.error;
+
     beforeAll(() => {
+        fetch.mockReset();
         console.error = jest.fn();
     });
     afterAll(() => {
         console.error = originalConsoleError;
     });
     it('debería validar enlaces exitosos', () => {
+        fetch.mockImplementation((href, options) => {
+            return Promise.resolve({ status: 200 });
+        });
+
         const links = [
             { href: 'https://example.com', text: 'Enlace 1' },
             { href: 'https://google.com', text: 'Enlace 2' }
@@ -174,6 +178,10 @@ describe('validateLinks function', () => {
     });
 
     it('debería validar enlaces fallidos', () => {
+        fetch.mockImplementation((url, options) => {
+            return Promise.reject({ response: { status: 404 } });
+        });
+
         const links = [
             { href: 'https://nonexistent-link.com', text: 'Enlace 1' },
             { href: 'https://invalid-link.com', text: 'Enlace 2' }
@@ -184,6 +192,28 @@ describe('validateLinks function', () => {
         return Promise.all(validatedLinksPromise).then(validatedLinks => {
             expect(validatedLinks).toHaveLength(2);
 
+            validatedLinks.forEach(link => {
+                expect(link.href).toBeDefined();
+                expect(link.status).toBe(404);
+                expect(link.ok).toBe(false);
+            });
+        });
+    });
+
+    it('debería validar enlaces fallidos cuando el error.response es undefined', () => {
+
+        fetch.mockImplementation((url, options) => {
+            return Promise.reject({ response: undefined });
+        });
+
+        const links = [
+            { href: 'https://nonexistent-link.com', text: 'Enlace 1' },
+            { href: 'https://invalid-link.com', text: 'Enlace 2' }
+        ];
+
+        const validatedLinksPromise = validateLinks(links);
+        return Promise.all(validatedLinksPromise).then(validatedLinks => {
+            expect(validatedLinks).toHaveLength(2);
             validatedLinks.forEach(link => {
                 expect(link.href).toBeDefined();
                 expect(link.status).toBe(404);

@@ -1,7 +1,6 @@
 const path = require('path');
 const fs = require('fs');
 const fetch = require('node-fetch');
-const colors = require('ansi-colors');
 
 //Verifica si la ruta es válida y obtiene información sobre si es un directorio o archivo .md
 function isPathValid(route) {
@@ -13,16 +12,15 @@ function isPathValid(route) {
         throw new Error(errorMessage);
     }
 
-    const isDir = fs.statSync(absolutePath).isDirectory();
+    const isDir = isDirectory(absolutePath);
     const isMarkdown = path.extname(absolutePath) === '.md';
 
     return { path: absolutePath, isDir, isMarkdown };
 }
 
-
 // Obtiene los archivos con extensión .md en la ruta de un directorio
 function getMDFilesInDirectory(absolutePath) {
-    if (fs.statSync(absolutePath).isDirectory()) {
+    if (isDirectory(absolutePath)) {
         const files = fs.readdirSync(absolutePath);
         const mdFiles = files.filter(file => path.extname(file) === '.md');
         return mdFiles.map(file => path.join(absolutePath, file));
@@ -33,12 +31,7 @@ function getMDFilesInDirectory(absolutePath) {
 
 // Valida si la ruta es un directorio
 function isDirectory(absolutePath) {
-    if (fs.statSync(absolutePath).isDirectory()) {
-        return true;
-    } else {
-        console.log(`La ruta ${absolutePath} es un archivo, no un directorio.`);
-        return false;
-    }
+    return fs.statSync(absolutePath).isDirectory();
 }
 
 // Lee el contenido de un archivo .md y devuelve el texto
@@ -83,7 +76,7 @@ function validateLinks(links) {
                     href: link.href,
                     text: link.text,
                     file: link.file,
-                    line: link.line, 
+                    line: link.line,
                     status: response.status,
                     ok: true
                 };
@@ -94,7 +87,7 @@ function validateLinks(links) {
                     href: link.href,
                     text: link.text,
                     file: link.file,
-                    line: link.line, 
+                    line: link.line,
                     status,
                     ok: false
                 };
