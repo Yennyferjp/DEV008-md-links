@@ -7,26 +7,33 @@ graph TD;
   A --> B[Sí];
   A --> C[No];
   B --> D{"¿La ruta es 
-  absoluta?"};
-  C --> E["Mensaje de error"];
+  absoluta?  
+  path.isAbsolute"};
+  C --> E["Mensaje de error 
+   throw new Error(errorMessage)"];
   D --> F[Sí];
   D --> G[No];
   G --> KK["Convertir a ruta 
-  absoluta"] --> D;
+  absoluta 
+  path.resolve(route)" ] --> D;
   E --> FIN(Fin);
   F --> H{"¿La ruta es 
-  un directorio?"};
+  un directorio?
+  isDirectory(absolutePath)"};
   H --> I[Sí];
   H --> J[No];
   I --> K["Recorre directorios
    y subdirectorios
-    para buscar archivo .md"]
+    para buscar archivo .md
+    getMDFilesInDirectory(absolutePath)"]
   K --> L["Extraer archivos .md"] --> P
   J --> M{Hay archivo .md?};
   M --> N["Sí"];
   M --> O["No"];
-  N --> P["Leer los archivos"];
-  O --> LL["Mostrar un mensaje en consola"]
+  N --> P["Leer los archivos
+  readMDFile(route)"];
+  O --> LL["Mostrar un mensaje en consola
+  throw new Error"]
   LL --> MMFIN(Fin);
   P --> Q["Analizar texto"]
   Q --> R{"¿Tiene Links?"};
@@ -34,18 +41,23 @@ graph TD;
   R --> T["No"];
   T --> U["Mensaje de error"]; 
   U --> VFIN(Fin);
-  S --> W["Extraer links"];   
-  W --> X["Status de links"];
+  S --> W["Extraer links
+  findLinksInMDText(fileContent, file)"];   
+  W --> X["Status de links
+  validateLinks(links)"];
   X --> Y{"¿Tiene opciones?"} -->|False| Z["Imprimir resultado en la consola"] --> VFIN(Fin) ;  
-  Y{"¿Tiene opciones?"} -->|True| AA{"---validate 
+  Y{"¿Tiene opciones?
+  mdLinks = (path, options)"} -->|True| AA{"---validate 
   &
-   ---stats"} ;  
+   ---stats
+   mdLinks(route, mdLinksOptions)"} ;  
   AA --> BB["Sí"];
   AA --> CC["No"];
   BB --> DD["Obtener respuesta
   de No. de links 
   totales Unicos, ok y fail"] --> Z;
-  CC --> EE{"--validate"}; 
+  CC --> EE{"--validate
+  else if (mdLinksOptions.validate)"}; 
   EE --> FF["Sí"];
   FF --> GG["Obtener respuesta del servidor del 
    status del link, ruta del archivo, 

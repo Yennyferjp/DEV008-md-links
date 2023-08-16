@@ -12,7 +12,7 @@ Reflexiona y luego marca los objetivos que has llegado a entender y aplicar en t
 
   * [Arreglos](https://curriculum.laboratoria.la/es/topics/javascript/04-arrays)
   * [Array - MDN](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array/)
-  * [Array.prototype.sort() - MDN](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
+  * [Array.prototype.sort() - MDN](https://developer33.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array/sort)
   * [Array.prototype.forEach() - MDN](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach)
   * [Array.prototype.map() - MDN](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
   * [Array.prototype.filter() - MDN](https://developer.mozilla.org/es/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)
