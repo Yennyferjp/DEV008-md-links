@@ -2,7 +2,6 @@
   "name": "md-links",
   "version": "1.0.0",
   "description": "Markdown links",
-
   "scripts": {
     "eslint": "eslint --ext .js src/ test/",
     "test": "jest --coverage"
@@ -10,7 +9,7 @@
   "author": "Yennyfer Jarava Perez",
   "license": "MIT",
   "bin": {
-    "md-links": "./cli/md-links.js"
+    "md-links": "cli/md-links.js"
   },
   "engines": {
     "node": ">=16.x"
@@ -45,5 +44,4 @@
     "node-fetch": "^2.6.12",
     "yargs": "^17.7.2"
   }
-
 }
