@@ -1,7 +1,8 @@
 {
-  "name": "md-links",
+  "name": "yennjp-md-links",
   "version": "1.0.0",
   "description": "Markdown links",
+  "repository": "github:Yennyferjp/DEV008-md-links",
   "scripts": {
     "eslint": "eslint --ext .js src/ test/",
     "test": "jest --coverage"
