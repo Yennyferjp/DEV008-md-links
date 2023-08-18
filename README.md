@@ -96,14 +96,12 @@ Si <b>ambas opciones</b> son seleccionadas, el resultado incluirá estadísticas
  <br/>
 Analiza el archivo ```file.md ``` y muestra los enlaces encontrados, junto con la ruta del archivo y el texto vinculado.
  <br/>
- <br/>
  
 ``` md-links directory/ ``` 
  <br/>
 Examina todos los archivos Markdown en ``` directorio/```  y sus subdirectorios, y despliega los enlaces descubiertos en la consola.
  <br/>
- <br/>
- 
+
 ``` md-links file.md --validate ``` 
  <br/>
 Verifica los enlaces en el archivo ```file.md ``` y muestra información detallada, incluida la ruta del archivo, el texto del enlace y el estado de la respuesta HTTP al realizar una solicitud.
@@ -121,12 +119,10 @@ Proporciona estadísticas más detalladas sobre los enlaces en ```file.md ```, i
 
  ## 4. Demo
  <br/>
-
-https://clipchamp.com/watch/gw9K7d8hwMw
+https://www.youtube.com/watch?v=g-zjZYMIMPA
 
 ## 5. Licencia
  <br/>
-
 <summary>Este paquete tiene la licencia MIT.</summary>
 
 ## 6. Referencias
