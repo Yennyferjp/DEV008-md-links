@@ -31,23 +31,21 @@ describe('isPathValid function', () => {
 });
 
 describe('getMDFilesInDirectory function', () => {
-    it('debe devolver un array de archivos .md cuando se le proporciona un directorio válido', () => {
+    it('debe devolver un array de archivos en el directorio cuando se le proporciona un directorio válido', () => {
         const validDirectory = 'C:\\src\\ynnf\\DEV008-md-links\\folderExample';
         const files = ['archivo1.txt', 'archivo2.md', 'archivo3.md', 'archivo4.js'];
 
-        jest.spyOn(fs, 'statSync').mockReturnValue({
-            isDirectory: () => true,
+        jest.spyOn(fs, 'statSync').mockImplementation((filePath) => {
+            return {
+                isDirectory: () => filePath === validDirectory,
+            }
         });
 
         jest.spyOn(fs, 'readdirSync').mockReturnValue(files);
 
         const result = getMDFilesInDirectory(validDirectory);
 
-        const expectedFiles = [
-            path.join(validDirectory, 'archivo2.md'),
-            path.join(validDirectory, 'archivo3.md'),
-        ];
-
+        const expectedFiles = files.map(file => path.join(validDirectory, file)); 
         expect(result).toEqual(expectedFiles);
 
         fs.statSync.mockRestore();
@@ -65,7 +63,6 @@ describe('getMDFilesInDirectory function', () => {
         fs.statSync.mockRestore();
     });
 });
-
 
 describe('isDirectory function', () => {
     it('debe devolver verdadero para un directorio válido', () => {
