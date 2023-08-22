@@ -18,12 +18,11 @@ function isPathValid(route) {
     return { path: absolutePath, isDir, isMarkdown };
 }
 
-// Obtiene los archivos con extensión .md en la ruta de un directorio
+// Obtiene todos archivos  en la ruta de un directorio
 function getMDFilesInDirectory(absolutePath) {
     if (isDirectory(absolutePath)) {
-        const files = fs.readdirSync(absolutePath);
-        const mdFiles = files.filter(file => path.extname(file) === '.md');
-        return mdFiles.map(file => path.join(absolutePath, file));
+        const files = fs.readdirSync(absolutePath, { recursive: false });
+        return files.map(file => path.join(absolutePath, file));
     } else {
         return [];
     }
