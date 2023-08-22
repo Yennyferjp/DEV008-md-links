@@ -4,6 +4,7 @@ const {
     readMDFile,
     findLinksInMDText,
     validateLinks,
+    isDirectory,
 } = require("./functions.js");
 
 //ruta de archivo, lee su contenido y busca enlaces en él. 
@@ -11,13 +12,32 @@ const getLinksFromMarkdownFile = (filePath) => {
     const mdText = readMDFile(filePath);
     return findLinksInMDText(mdText, filePath);
 };
+
+const getLinksFromDirectoryRecursive = (dirPath) => {
+
+    const allLinks = [];
+    const paths = getMDFilesInDirectory(dirPath);
+
+    for (const path of paths) {
+
+        if (path.endsWith('.md')) {
+            const links = getLinksFromMarkdownFile(path);
+            allLinks.push(...links);
+        } else if (isDirectory(path)) {
+            const subLinks = getLinksFromDirectoryRecursive(path);
+            allLinks.push(...subLinks);
+        }
+    }
+    return allLinks;
+};
+
 const mdLinks = (path, options) => {
     return new Promise((resolve, reject) => {
         try {
             const pathCheck = isPathValid(path);
 
             if (pathCheck.isDir) {
-                const allLinks = getLinksFromDirectoryRecursive(pathCheck.path, options);
+                const allLinks = getLinksFromDirectoryRecursive(pathCheck.path);
                 resolve(allLinks);
             } else if (pathCheck.isMarkdown) {
                 const links = getLinksFromMarkdownFile(pathCheck.path);
@@ -44,26 +64,24 @@ const mdLinks = (path, options) => {
     });
 };
 
-const getLinksFromDirectoryRecursive = (dirPath, options) => {
-    const mdFiles = getMDFilesInDirectory(dirPath);
-    const allLinks = [];
-
-    mdFiles.forEach((mdFilePath) => {
-        const links = getLinksFromMarkdownFile(mdFilePath);
-        allLinks.push(...links);
-    });
-
-    const subdirectories = getSubdirectories(dirPath);
-
-    subdirectories.forEach((subdirectory) => {
-        const subdirectoryLinks = getLinksFromDirectoryRecursive(subdirectory, options);
-        allLinks.push(...subdirectoryLinks);
-    });
-
-    return allLinks;
-};
-
-
 module.exports = {
     mdLinks,
 };
+
+
+// const getLinksFromDirectoryRecursive = (dirPath, allLinks) => {
+
+//     allLinks = allLinks === undefined ? [] : allLinks;
+//     const paths = getMDFilesInDirectory(dirPath);
+
+//     for (const path of paths) {
+
+//         if (path.endsWith('.md')) {
+//             const links = getLinksFromMarkdownFile(path);
+//             allLinks.push(...links);
+//         } else if (isDirectory(path)) {
+//             getLinksFromDirectoryRecursive(path, allLinks);
+//         }
+//     }
+//     return allLinks;
+// };
