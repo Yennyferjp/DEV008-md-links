@@ -12,7 +12,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\cli\\md-links.js",
-            "args": ["./folderExample/file-1.md", "--validate", "--stats"]
+            "args": ["./folderExample/", "--validate", "--stats"]
         },
         {
             "type": "node",
@@ -22,7 +22,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\cli\\md-links.js",
-            "args": ["./folderExample/file-1.md", "--validate"]
+            "args": ["./folderExample/", "--validate"]
         },
         {
             "type": "node",
@@ -42,7 +42,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\cli\\md-links.js",
-            "args": ["./folderExample/file-1.md"]
+            "args": ["./folderExample/"]
         }
     ]
 }

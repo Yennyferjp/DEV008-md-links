@@ -38,7 +38,19 @@ const mdLinks = (path, options) => {
 
             if (pathCheck.isDir) {
                 const allLinks = getLinksFromDirectoryRecursive(pathCheck.path);
-                resolve(allLinks);
+                if (options.validate) {
+                    const results = validateLinks(allLinks);
+                    resolve(Promise.all(results));
+                } else {
+                    resolve(allLinks.map(link => ({
+                        href: link.href,
+                        text: link.text,
+                        file: link.file,
+                        line: link.line,
+                        status: 0,
+                        ok: true,
+                    })));
+                }
             } else if (pathCheck.isMarkdown) {
                 const links = getLinksFromMarkdownFile(pathCheck.path);
 
